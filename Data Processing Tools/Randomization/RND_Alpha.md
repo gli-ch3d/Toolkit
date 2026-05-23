@@ -1,6 +1,6 @@
 # Sequence Generator – RND_Alpha
 
-This generator produces a semi-randomized ordered sequence, combining 3 variables. The output is a list of codes in the format `XX.YY.ZZ`, where:
+This generator produces a simple pre-generated semi-randomized ordered sequence, combining 3 variables. The output is a list of codes in the format `XX.YY.ZZ`, where:
 
 - `XX` = Independent Var 1 - (General Category)
 - `YY` = Non-Dependant - (Randomize Picture/Variations) 
