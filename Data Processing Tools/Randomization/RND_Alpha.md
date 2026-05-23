@@ -1,44 +1,58 @@
-# Sequence Generator for Shape-Color-Pattern Stimuli
+# Sequence Generator – RND_Alpha
 
-This script generates a randomised sequence of experimental trials in the format **`XX.YY.ZZ`**, where:
+This generator produces an ordered sequence of experimental conditions, each combining a **Shape**, a **Color**, and a **Pattern**. The output is a list of codes in the format `XX.YY.ZZ`, where:
 
-- **`XX`** = Shape (hex `00`–`07`, 8 unique shapes)  
-- **`YY`** = Color  (hex `00`–`03`, 4 colors)  
-- **`ZZ`** = Pattern (hex `00`–`03`, 4 patterns)
+- `XX` = Shape ID (two‑digit hex, e.g. `00`–`07` for up to 8 shapes)  
+- `YY` = Color ID (`00`–`03` for up to 4 colors)  
+- `ZZ` = Pattern ID (`00`–`03` for up to 4 patterns)
 
-Every possible `Shape.Color` pair appears **exactly once** (8 × 4 = 32 trials).  
-Patterns are randomly assigned to colors **for each shape** – no two shapes share the same color‑pattern mapping.
+Every shape–color pair appears exactly once, and each shape receives a randomised pattern assignment. The sequence also enforces **spacing rules** to avoid close repetitions:
 
-The generator enforces **cooldown constraints** to avoid close repetitions that could bias results:
-
-- **Shape cooldown** – a shape may not reappear within the next **4 trials** (i.e., at least 4 different shapes must occur between two occurrences of the same shape).  
-- **Pattern cooldown** – a pattern may not reappear within the next **2 trials** (at least 2 different patterns must occur between two occurrences of the same pattern).
-
-Colors have no cooldown; they are balanced across all shapes.
-
-Every run produces a **different randomised order** that satisfies all constraints.
+- A shape cannot appear again within **4** other conditions.  
+- A pattern cannot appear again within **2** other conditions.
 
 ---
 
-## How the Code Works
+## Example Configuration
 
-1. **Dictionary of pairs** – each shape gets two parallel lists: colors and patterns, randomly paired 1‑to‑1.  
-2. **Round‑based selection** – all shapes start with 4 color‑pattern pairs. The algorithm works in *rounds* (max length → 3 → 2 → 1), picking every shape exactly once per round.  
-3. **Repetition check** – short‑term memory tracks the last trial index of each shape and pattern. A candidate is eligible only if both cooldowns have expired.  
-4. **Random pick** – a random eligible shape is chosen, then a random valid color‑pattern pair from that shape.  
-5. **Output & update** – the trial string (`shape.color.pattern`) is saved, the used pair is removed, and the memory is updated.  
-6. **Repeat** until all 32 trials are generated.
+**Shapes (8)**  
+`00` = Circle, `01` = Square, `02` = Triangle, `03` = Star,  
+`04` = Diamond, `05` = Hexagon, `06` = Cross, `07` = Heart.
 
-If a deadlock ever occurs (extremely unlikely with these loose constraints), the algorithm simply restarts automatically.
+**Colors (4)**  
+`00` = Red, `01` = Blue, `02` = Green, `03` = Yellow.
+
+**Patterns (4)**  
+`00` = Solid, `01` = Dotted, `02` = Striped, `03` = Checkered.
+
+**Resulting sequence length:** 8 shapes × 4 colors = 32 conditions.
 
 ---
 
-## Customisation Points (top of the script)
+## Sample Output (first 5 lines)
+05.02.01  
+01.00.03  
+03.03.00  
+07.01.02  
+00.01.00  
+…
 
-```python
-NUM_ITEMS      = 8    # number of shapes (0x00–0x07)
-NUM_VARIATIONS = 4    # number of colors (0x00–0x03)
-NUM_STYLES     = 4    # number of patterns (0x00–0x03)
+---
 
-ITEM_COOLDOWN  = 4    # min. trials between same shape
-STYLE_COOLDOWN = 2    # min. trials between same pattern
+## Interpreting a Code
+
+`05.02.01` → **Hexagon**, **Green**, **Dotted**.
+
+| Shape | Color | Pattern |
+|-------|-------|---------|
+| `05` → Hexagon | `02` → Green | `01` → Dotted |
+
+Use the tables above to map every code to a human‑readable condition.
+
+---
+
+## Key Design Features
+
+- **Full coverage** – Every shape is tested with every color exactly once.
+- **Randomised patterns** – Pattern assignments are shuffled within each shape, ensuring all patterns appear equally (8 times each).
+- **Spaced repetitions** – You will never see the same shape again until at least 4 other shapes have passed, and a pattern will not repeat within 2 other conditions. This avoids clustering and potential carry‑over effects.
