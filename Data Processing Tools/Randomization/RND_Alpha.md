@@ -17,7 +17,9 @@ Every XX - YY pair appears exactly once, and each XX receives a randomised ZZ as
 
 Used for sequences comparing changes (ZZ) utilizing examples of (XX) with (YY) variations.  
 
-In the case below, it is utilized for creating a random sequence comparing patterns across shapes, while ensuring each Shape, Color and Pattern is Unique.
+In the case below, it is utilized for creating a random sequence comparing patterns across shapes, while ensuring each Shape, Color and Pattern is Unique.  
+
+
 ---
 
 ## Example Configuration
