@@ -9,13 +9,13 @@ This is my personal toolkit for processing data and information.
 
 #### Randomization
 
-[RND_Alpha](./Data%20Processing%20Tools/Randomization/RND_Alpha/RND_Alpha.md)
+[RND_Alpha](./Data%20Processing%20Tools/Randomization/RND_Alpha)
 
 ### Math Tools
 
 #### Binary Processing
 
-[Modulo 2 Division](./Math%20Tools/Binary%20Processing/Modulo%202%20Division/Mod2.md)
+[Modulo 2 Division](./Math%20Tools/Binary%20Processing/Modulo%202%20Division)
 
 ### Archive  
 
