@@ -1,12 +1,9 @@
 
 # Toolkit
 
----
 This is my personal toolkit for processing data and information.  
 
 ## Tools
-
----
 
 ### Data Processing
 
