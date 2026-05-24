@@ -10,6 +10,14 @@ NUM_STYLES      = 9    # 0x00 … 0x08
 # Cooldown requirements (must stay at least this many other codes apart)
 ITEM_COOLDOWN   = 5    # skip 5 items → 6 positions between repetitions
 STYLE_COOLDOWN  = 3    # skip 3 styles → 4 positions between repetitions
+
+# Set random seed (for consistency or testing)
+# Comment out for system built random generation
+
+SEED_VAL = 12345
+
+random.seed(SEED_VAL)
+
 # =============================================================================
 
 

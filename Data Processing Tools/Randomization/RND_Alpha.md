@@ -3,7 +3,7 @@
 This generator produces a simple pre-generated semi-randomized ordered sequence, combining 3 variables. The output is a list of codes in the format `XX.YY.ZZ`, where:
 
 - `XX` = Independent Var 1 - (General Category)
-- `YY` = Non-Dependant - (Randomize Picture/Variations) 
+- `YY` = Non-Dependant - (Randomize Picture/Variations)  
 - `ZZ` = Testing Variable - (must be identical in length to "YY")
 
 Every XX - YY pair appears exactly once, and each XX receives a randomised ZZ assignment. The sequence also enforces **spacing rules** to avoid close repetitions:
@@ -18,7 +18,6 @@ Every XX - YY pair appears exactly once, and each XX receives a randomised ZZ as
 Used for sequences comparing changes (ZZ) utilizing examples of (XX) with (YY) variations.  
 
 In the case below, it is utilized for creating a random sequence comparing patterns across shapes, while ensuring each Shape, Color and Pattern is Unique.  
-
 
 ---
 
@@ -39,6 +38,7 @@ In the case below, it is utilized for creating a random sequence comparing patte
 ---
 
 ## Sample Output (first 5 lines)
+
 05.02.01  
 01.00.03  
 03.03.00  
@@ -52,8 +52,8 @@ In the case below, it is utilized for creating a random sequence comparing patte
 
 `05.02.01` → **Hexagon**, **Green**, **Dotted**.
 
-| Shape - XX | Color - YY | Pattern - ZZ |
-|------------|------------|--------------|
+|   Shape - XX   |   Color - YY | Pattern - ZZ  |
+|----------------|--------------|---------------|
 | `05` → Hexagon | `02` → Green | `01` → Dotted |
 
 Use the tables above to map every code to a human‑readable condition.
