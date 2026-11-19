@@ -1,9 +1,14 @@
 import argparse
 from pathlib import Path
+import threading
 import time
 
 import cv2
 import mediapipe as mp
+
+
+latest_pose_landmarks = None
+pose_result_lock = threading.Lock()
 
 
 def parse_source(value: str) -> int | str:
@@ -18,7 +23,11 @@ def on_result(
     _output_image: mp.Image,
     timestamp_ms: int,
 ) -> None:
-    print(f"Detected {len(result.pose_landmarks)} pose(s) at {timestamp_ms} ms")
+    global latest_pose_landmarks
+
+    pose_landmarks = result.pose_landmarks[0] if result.pose_landmarks else None
+    with pose_result_lock:
+        latest_pose_landmarks = pose_landmarks
 
 
 def main() -> None:
@@ -31,7 +40,8 @@ def main() -> None:
     parser.add_argument(
         "--model",
         type=Path,
-        default=Path(__file__).with_name("pose_landmarker_lite.task"),
+        default=Path(__file__).with_name("pose_landmarker_heavy.task"),
+    #   default=Path(__file__).with_name("pose_landmarker_lite.task"),
         help="path to the Pose Landmarker .task model",
     )
     parser.add_argument(
@@ -90,6 +100,61 @@ def main() -> None:
                 landmarker.detect_async(mp_image, timestamp_ms)
 
                 if not args.no_preview:
+                    with pose_result_lock:
+                        pose_landmarks = latest_pose_landmarks
+
+                    if pose_landmarks:
+                        mp.tasks.vision.drawing_utils.draw_landmarks(
+                            frame,
+                            pose_landmarks,
+                            connections=mp.tasks.vision.PoseLandmarksConnections.POSE_LANDMARKS,
+                            landmark_drawing_spec=mp.tasks.vision.drawing_utils.DrawingSpec(
+                                color=(0, 0, 255),
+                                thickness=2,
+                                circle_radius=3,
+                            ),
+                            connection_drawing_spec=mp.tasks.vision.drawing_utils.DrawingSpec(
+                                color=(0, 255, 0),
+                                thickness=2,
+                            ),
+                        )
+                        frame_height, frame_width = frame.shape[:2]
+                        for index, landmark in enumerate(pose_landmarks):
+                            if (
+                                landmark.visibility is not None
+                                and landmark.visibility < 0.5
+                            ) or (
+                                landmark.presence is not None
+                                and landmark.presence < 0.5
+                            ):
+                                continue
+                            if not (0 <= landmark.x <= 1 and 0 <= landmark.y <= 1):
+                                continue
+
+                            x = round(landmark.x * (frame_width - 1))
+                            y = round(landmark.y * (frame_height - 1))
+                            label_position = (x + 5, y - 5)
+                            cv2.putText(
+                                frame,
+                                str(index),
+                                label_position,
+                                cv2.FONT_HERSHEY_SIMPLEX,
+                                0.45,
+                                (0, 0, 0),
+                                3,
+                                cv2.LINE_AA,
+                            )
+                            cv2.putText(
+                                frame,
+                                str(index),
+                                label_position,
+                                cv2.FONT_HERSHEY_SIMPLEX,
+                                0.45,
+                                (255, 255, 255),
+                                1,
+                                cv2.LINE_AA,
+                            )
+
                     cv2.imshow("Pose Landmarker", frame)
                     if cv2.waitKey(1) & 0xFF == ord("q"):
                         break
